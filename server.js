@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require('express-session');
+
+const isSignedIn = require('./middleware/is-signed-in.js');
+const passUserToView = require('./middleware/pass-user-to-view.js');
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
 const authController = require("./controllers/auth.js");
@@ -32,6 +35,16 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(passUserToView); // use new passUserToView middleware here
+
+app.get('/', (req, res) => {
+  res.render('index.ejs', {
+    user: req.session.user,
+  });
+});
+
+app.use('/auth', authController);
+app.use(isSignedIn); // use new isSignedIn middleware here
 
 app.use("/auth", authController);
 // server.js
