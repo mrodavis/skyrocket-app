@@ -13,6 +13,9 @@ const passUserToView = require('./middleware/pass-user-to-view.js');
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
 const authController = require("./controllers/auth.js");
+// server.js
+
+const applicationsController = require('./controllers/applications.js');
 
 
 
@@ -45,9 +48,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', authController);
 app.use(isSignedIn); // use new isSignedIn middleware here
-
-app.use("/auth", authController);
-// server.js
+app.use('/users/:userId/applications', applicationsController); // New!
 
 // GET /
 app.get("/", (req, res) => {
