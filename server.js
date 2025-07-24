@@ -40,21 +40,20 @@ app.use(
 );
 app.use(passUserToView); // use new passUserToView middleware here
 
-app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
-});
-
 app.use('/auth', authController);
 app.use(isSignedIn); // use new isSignedIn middleware here
 app.use('/users/:userId/applications', applicationsController); // New!
 
 // GET /
-app.get("/", (req, res) => {
-  res.render("index.ejs", {
-    user: req.session.user,
-  });
+app.get('/', (req, res) => {
+  // Check if the user is signed in
+  if (req.session.user) {
+    // Redirect signed-in users to their applications index
+    res.redirect(`/users/${req.session.user._id}/applications`);
+  } else {
+    // Show the homepage for users who are not signed in
+    res.render('index.ejs');
+  }
 });
 
 
